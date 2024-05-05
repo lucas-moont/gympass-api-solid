@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma"
-import { PrismaUserRepository } from "@/repositories/prisma-user-repository"
+import { UsersRepository } from "@/repositories/users-repository"
 import { hash } from "bcryptjs"
+import { UserAlreadyExists } from "./errors/user-already-exists-ts"
 
 interface RegisterUserServiceRequest {
   name: string, 
@@ -9,7 +9,7 @@ interface RegisterUserServiceRequest {
 }
 
 export class RegisterUserService{
-  constructor(private userCaseRepo: any){
+  constructor(private userCaseRepo: UsersRepository){ //nessa linha é como se setassemos uma propriedade privada para essa classe chamada userCaseRepo 
 
   }
 
@@ -20,14 +20,10 @@ export class RegisterUserService{
       password
     }: RegisterUserServiceRequest
   ){
-    const userDoesExist = await prisma.user.findUnique({
-      where: {
-        email
-      }
-    })
+    const userDoesExist = await this.userCaseRepo.findByEmail(email)
   
     if(userDoesExist){
-      throw new Error('Email already registered.')
+      throw new UserAlreadyExists()
     }
     
     const password_hash = await hash(password, 6)
