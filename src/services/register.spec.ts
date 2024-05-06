@@ -41,4 +41,19 @@ describe("Register Use Case", () => {
       })
     ).rejects.toBeInstanceOf(UserAlreadyExists); //podemos usar resolve caso esperemos que o teste/promise seja certo
   });
+
+  test("should be able to register", async () => {
+    const inMemoryUserRepo = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUserService(inMemoryUserRepo);
+
+    await registerUseCase.execute({
+      name: "John Doe",
+      email: "johndoe@email.com",
+      password: "kazuofilhodaputa",
+    });
+
+    const inMemoryUserRepoItemsLength = inMemoryUserRepo.items.length
+
+    expect(inMemoryUserRepoItemsLength > 0).toBe(true)
+  });
 });
