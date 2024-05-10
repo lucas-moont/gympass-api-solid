@@ -1,22 +1,27 @@
-import { expect, describe, test } from "vitest";
+import { expect, describe, test, beforeEach } from "vitest";
 import { RegisterUserService } from "./register";
 import { compare } from "bcryptjs";
 import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository";
 import { UserAlreadyExists } from "./errors/user-already-exists-ts";
 
-describe("Register Use Case", () => {
-  test("should hash user password upon registration", async () => {
-    const inMemoryUserRepo = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUserService(inMemoryUserRepo);
+let inMemoryUserRepo: InMemoryUsersRepository
+let sut: RegisterUserService
 
-    const { user } = await registerUseCase.execute({
+describe("Register Use Case", () => {
+  beforeEach(() => {
+    inMemoryUserRepo = new InMemoryUsersRepository();
+    sut = new RegisterUserService(inMemoryUserRepo);
+  })
+  test("should hash user password upon registration", async () => {
+
+    const { user } = await sut.execute({
       name: "John Doe",
       email: "johndoe@email.com",
-      password: "kazuofilhodaputa",
+      password: "123456",
     });
 
     const isPasswordCorrectlyHashed = await compare(
-      "kazuofilhodaputa",
+      "123456",
       user.password_hash
     );
 
@@ -24,32 +29,26 @@ describe("Register Use Case", () => {
   });
 
   test("should not be able to register with same email twice", async () => {
-    const inMemoryUserRepo = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUserService(inMemoryUserRepo);
-
-    await registerUseCase.execute({
+    await sut.execute({
       name: "John Doe",
       email: "johndoe@email.com",
-      password: "kazuofilhodaputa",
+      password: "123456",
     });
 
     await expect(() =>
-      registerUseCase.execute({
+      sut.execute({
         name: "John Doe",
         email: "johndoe@email.com",
-        password: "kazuofilhodaputa",
+        password: "123456",
       })
     ).rejects.toBeInstanceOf(UserAlreadyExists); //podemos usar resolve caso esperemos que o teste/promise seja certo
   });
 
   test("should be able to register", async () => {
-    const inMemoryUserRepo = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUserService(inMemoryUserRepo);
-
-    await registerUseCase.execute({
+    await sut.execute({
       name: "John Doe",
       email: "johndoe@email.com",
-      password: "kazuofilhodaputa",
+      password: "123456",
     });
 
     const inMemoryUserRepoItemsLength = inMemoryUserRepo.items.length
