@@ -7,100 +7,102 @@ import { afterEach } from "node:test";
 import { InMemoryGymRepository } from "@/repositories/in-memory/in-memory-gym-repository";
 import { Decimal } from "@prisma/client/runtime/library";
 
-let inMemoryCheckInRepo: InMemoryCheckInRepository
-let gymRepository: InMemoryGymRepository
-let sut: CheckInService
+let inMemoryCheckInRepo: InMemoryCheckInRepository;
+let gymRepository: InMemoryGymRepository;
+let sut: CheckInService;
 
-describe('check in tests', () => {
+describe("check in tests", () => {
   beforeEach(() => {
-    inMemoryCheckInRepo = new InMemoryCheckInRepository()
-    gymRepository = new InMemoryGymRepository()
-    sut = new CheckInService(inMemoryCheckInRepo, gymRepository)
+    inMemoryCheckInRepo = new InMemoryCheckInRepository();
+    gymRepository = new InMemoryGymRepository();
+    sut = new CheckInService(inMemoryCheckInRepo, gymRepository);
 
     gymRepository.items.push({
-      id: 'gym-01',
+      id: "gym-01",
       latitude: new Decimal(0),
       longitude: new Decimal(0),
-      title: 'Academia teste',
-      phone: '', 
-      description: ''
-    })
+      title: "Academia teste",
+      phone: "",
+      description: "",
+    });
 
-    vi.useFakeTimers()
-  })
+    vi.useFakeTimers();
+  });
 
   afterEach(() => {
-    vi.useRealTimers()
-  })
+    vi.useRealTimers();
+  });
 
-
-  
-  test('user should be able to check-in', async () => {
-    const {checkin} = await sut.execute({
+  test("user should be able to check-in", async () => {
+    const { checkin } = await sut.execute({
       gymId: randomUUID(),
       userId: randomUUID(),
       userLatitude: 0,
-      userLongitude: 0
+      userLongitude: 0,
+    });
 
-    })
-    
-    expect(checkin.id).toEqual(expect.any(String))
-  })
+    expect(checkin.id).toEqual(expect.any(String));
+  });
 
-  test('user should not be able to check in twice a day', async () => {
-    
-    vi.setSystemTime(new Date(2024, 0, 20, 8, 0, 0))
-    
+  test("user should not be able to check in twice a day", async () => {
+    vi.setSystemTime(new Date(2024, 0, 20, 8, 0, 0));
+
+    await sut.execute({
+      gymId: "gym-01",
+      userId: "user-01",
+      userLatitude: 0,
+      userLongitude: 0,
+    });
+
+    await expect(
+      sut.execute({
+        gymId: randomUUID(),
+        userId: "user-01",
+        userLatitude: 0,
+        userLongitude: 0,
+      })
+    ).rejects.toBeInstanceOf(Error);
+  });
+
+  test("user should be able to check in twice in different days", async () => {
+    vi.setSystemTime(new Date(2024, 0, 20, 8, 0, 0));
+
     await sut.execute({
       gymId: randomUUID(),
-      userId: 'mesmo-id',
+      userId: "user-01",
       userLatitude: 0,
-      userLongitude: 0
-    })
+      userLongitude: 0,
+    });
 
-    await expect(sut.execute({
+    vi.setSystemTime(new Date(2024, 0, 21, 8, 0, 0));
+
+    const { checkin } = await sut.execute({
       gymId: randomUUID(),
-      userId: 'mesmo-id',
+      userId: "user-01",
       userLatitude: 0,
-      userLongitude: 0
-    })).rejects.toBeInstanceOf(Error)
+      userLongitude: 0,
+    });
 
-  })
+    expect(checkin.id).toEqual(expect.any(String));
+  });
 
-  test('user should be able to check in twice in different days', async () => {
-    
-    vi.setSystemTime(new Date(2024, 0, 20, 8, 0, 0))
-    
-    await sut.execute({
-      gymId: randomUUID(),
-      userId: 'mesmo-id',
-      userLatitude: 0,
-      userLongitude: 0
-    })
+  test("user should not be able to check-in in distant gyms", async () => {
+    gymRepository.items.push({
+      id: "gym-02",
+      latitude: new Decimal(-22.8506215),
+      longitude: new Decimal(-22.8506215),
+      title: "Academia teste",
+      phone: "",
+      description: "",
+    });
 
-    vi.setSystemTime(new Date(2024, 0, 21, 8, 0, 0))
-
-
-    const {checkin} = await sut.execute({
-      gymId: randomUUID(),
-      userId: 'mesmo-id',
-      userLatitude: 0,
-      userLongitude: 0
-    })
-
-    expect(checkin.id).toEqual(expect.any(String))
-  })
-
-  test('user should not be able to check-in in distant gyms', async () => {
-    //TODO: test being developed
-    const {checkin} = await sut.execute({
-      gymId: randomUUID(),
-      userId: randomUUID(),
-      userLatitude: 0,
-      userLongitude: 0
-
-    })
-    
-    expect(checkin.id).toEqual(expect.any(String))
-  })
-})
+    expect(
+      await sut.execute({
+        gymId: 'gym-02',
+        userId: 'user-01',
+        userLatitude: -22.8756526,
+        userLongitude: -43.1207949,
+      })
+    ).rejects.toBeInstanceOf(Error);
+  });
+});
