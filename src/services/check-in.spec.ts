@@ -35,8 +35,8 @@ describe("check in tests", () => {
 
   test("user should be able to check-in", async () => {
     const { checkin } = await sut.execute({
-      gymId: randomUUID(),
-      userId: randomUUID(),
+      gymId: "gym-01",
+      userId: "user-01",
       userLatitude: 0,
       userLongitude: 0,
     });
@@ -56,7 +56,7 @@ describe("check in tests", () => {
 
     await expect(
       sut.execute({
-        gymId: randomUUID(),
+        gymId: "gym-01",
         userId: "user-01",
         userLatitude: 0,
         userLongitude: 0,
@@ -68,7 +68,7 @@ describe("check in tests", () => {
     vi.setSystemTime(new Date(2024, 0, 20, 8, 0, 0));
 
     await sut.execute({
-      gymId: randomUUID(),
+      gymId: "gym-01",
       userId: "user-01",
       userLatitude: 0,
       userLongitude: 0,
@@ -77,7 +77,7 @@ describe("check in tests", () => {
     vi.setSystemTime(new Date(2024, 0, 21, 8, 0, 0));
 
     const { checkin } = await sut.execute({
-      gymId: randomUUID(),
+      gymId: 'gym-01',
       userId: "user-01",
       userLatitude: 0,
       userLongitude: 0,
@@ -96,8 +96,8 @@ describe("check in tests", () => {
       description: "",
     });
 
-    expect(
-      await sut.execute({
+    await expect(() =>
+      sut.execute({
         gymId: 'gym-02',
         userId: 'user-01',
         userLatitude: -22.8756526,
