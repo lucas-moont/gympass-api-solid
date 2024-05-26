@@ -1,19 +1,35 @@
-import { GymAlreadyExists } from "@/services/errors/gym-already-exists";
+import { randomUUID } from "crypto";
 import { GymRepository } from "../gym-repository";
-import { Gym } from "@prisma/client";
+import { Gym, Prisma } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export class InMemoryGymRepository implements GymRepository{
   items: Gym[] = []
 
-  async create(data: Gym) {
-    const gym = this.items.find(item => data.cnpj === item.cnpj)
-    
-    if(gym){
-      throw new GymAlreadyExists()
+  async create(data: Prisma.GymCreateInput) {
+    const gym = {
+      id: data.id ?? randomUUID(),
+      title: data.title,
+      description: data.description ?? null, 
+      phone: data.phone ?? null,
+      cnpj: data.cnpj,
+      latitude: new Decimal(data.latitude.toString()),
+      longitude: new Decimal(data.longitude.toString()),
+      created_at: new Date()
     }
 
-    this.items.push(data)
-    return data
+    this.items.push(gym)
+    return gym
+  }
+
+  async findByCnpj(cnpj: string){
+    const gym = this.items.find(item => cnpj === item.cnpj)
+    
+    if(!gym){
+      return null
+    }
+
+    return gym
   }
   
   async findById(id: string) {

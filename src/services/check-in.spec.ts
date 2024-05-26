@@ -1,9 +1,8 @@
 import { InMemoryCheckInRepository } from "@/repositories/in-memory/in-memory-check-ins-repository";
 import { CheckInRepository } from "@/repositories/check-in-repository";
 import { CheckInService } from "./check-in";
-import { expect, test, describe, vi, beforeEach } from "vitest";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { randomUUID } from "crypto";
-import { afterEach } from "node:test";
 import { InMemoryGymRepository } from "@/repositories/in-memory/in-memory-gym-repository";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -17,10 +16,11 @@ describe("check in tests", () => {
     gymRepository = new InMemoryGymRepository();
     sut = new CheckInService(inMemoryCheckInRepo, gymRepository);
 
-    gymRepository.items.push({
+    gymRepository.create({
       id: "gym-01",
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: 0,
+      longitude: 0,
+      cnpj: '123456789',
       title: "Academia teste",
       phone: "",
       description: "",
@@ -92,6 +92,7 @@ describe("check in tests", () => {
       latitude: new Decimal(-22.8506215),
       longitude: new Decimal(-22.8506215),
       title: "Academia teste",
+      cnpj: '123456789',
       phone: "",
       description: "",
     });
