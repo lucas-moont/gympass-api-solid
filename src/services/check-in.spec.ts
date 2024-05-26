@@ -5,6 +5,8 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { randomUUID } from "crypto";
 import { InMemoryGymRepository } from "@/repositories/in-memory/in-memory-gym-repository";
 import { Decimal } from "@prisma/client/runtime/library";
+import { MaxCheckInError } from "./errors/max-checkin-error";
+import { MaxDistanceError } from "./errors/max-distance-error";
 
 let inMemoryCheckInRepo: InMemoryCheckInRepository;
 let gymRepository: InMemoryGymRepository;
@@ -61,7 +63,7 @@ describe("check in tests", () => {
         userLatitude: 0,
         userLongitude: 0,
       })
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxCheckInError);
   });
 
   test("user should be able to check in twice in different days", async () => {
@@ -104,6 +106,6 @@ describe("check in tests", () => {
         userLatitude: -22.8756526,
         userLongitude: -43.1207949,
       })
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxDistanceError);
   });
 });
