@@ -1,9 +1,12 @@
 export interface Coordinate {
-  latitude: number,
-  longitude: number,
+  latitude: number
+  longitude: number
 }
 
-export function getsDistanceBetweenCoordinates (from: Coordinate, to: Coordinate){
+export function getsDistanceBetweenCoordinates(
+  from: Coordinate,
+  to: Coordinate,
+) {
   if (from.latitude === to.latitude && from.longitude === to.longitude) {
     return 0
   }
