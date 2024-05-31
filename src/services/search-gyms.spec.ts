@@ -35,10 +35,27 @@ describe('search gym', () => {
       title: 'Academia 03',
     })
 
-    const { gyms } = await sut.execute({ query })
+    const { gyms } = await sut.execute({ query, page: 1 })
 
     expect(gyms).toHaveLength(3)
   })
 
-  //TODO: teste de paginação
+  test('pagination should be working', async () => {
+    for (let index = 1; index <= 22; index++) {
+      gymRepository.create({
+        cnpj: `${index}`,
+        latitude: 0,
+        longitude: 0,
+        title: `Academia ${index}`,
+      })
+    }
+
+    const query = 'academia'
+
+    const { gyms } = await sut.execute({ query, page: 2 })
+    expect(gyms).toEqual([
+      expect.objectContaining({ title: 'Academia 21' }),
+      expect.objectContaining({ title: 'Academia 22' }),
+    ])
+  })
 })
