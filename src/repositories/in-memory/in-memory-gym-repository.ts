@@ -6,6 +6,12 @@ import { Decimal } from '@prisma/client/runtime/library'
 export class InMemoryGymRepository implements GymRepository {
   items: Gym[] = []
 
+  async findGymByName(gymName: string) {
+    return this.items.filter((item) =>
+      item.title.toLowerCase().includes(gymName.toLowerCase()),
+    )
+  }
+
   async create(data: Prisma.GymCreateInput) {
     const gym = {
       id: data.id ?? randomUUID(),
