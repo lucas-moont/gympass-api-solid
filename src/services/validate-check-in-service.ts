@@ -22,6 +22,10 @@ export class ValidateCheckInService {
       throw new ResourceNotFound()
     }
 
+    checkin.validated_at = new Date()
+
+    this.checkInRepository.save(checkin)
+
     return {
       checkin,
     }
