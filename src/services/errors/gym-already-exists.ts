@@ -1,5 +1,5 @@
 export class GymAlreadyExists extends Error {
-  constructor(){
+  constructor() {
     super('Academia já existe')
   }
 }

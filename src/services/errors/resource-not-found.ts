@@ -1,5 +1,5 @@
-export class ResourceNotFound extends Error{
-  constructor(){
+export class ResourceNotFound extends Error {
+  constructor() {
     super('Resource not found')
   }
 }

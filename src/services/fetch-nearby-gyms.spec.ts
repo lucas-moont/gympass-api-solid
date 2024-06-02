@@ -66,5 +66,5 @@ describe('fetch nearby gyms', () => {
     ])
   })
 
-  //TODO: TESTE PARA NÃO PEGAR ACADEMIAS PRÓXIMAS
+  // TODO: TESTE PARA NÃO PEGAR ACADEMIAS PRÓXIMAS
 })

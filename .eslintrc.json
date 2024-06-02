@@ -13,6 +13,7 @@
         "semi": false
       }
     ],
-    "no-useless-constructor": "off"
+    "no-useless-constructor": "off",
+    "camelcase": "off"
   }
 }
