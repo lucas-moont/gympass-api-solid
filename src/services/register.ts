@@ -31,8 +31,6 @@ export class RegisterUserService {
 
     const password_hash = await hash(password, 6)
 
-    //    const prismaUserRepository = new PrismaUserRepository()
-
     const user = await this.userCaseRepo.create({
       name,
       email,
