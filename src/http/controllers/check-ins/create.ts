@@ -22,14 +22,12 @@ export async function create(req: FastifyRequest, reply: FastifyReply) {
 
   const createCheckIn = makeCheckInsService()
 
-  const checkIn = await createCheckIn.execute({
+  const { checkin } = await createCheckIn.execute({
     gymId,
     userId: req.user.sub,
     userLatitude: latitude,
     userLongitude: longitude,
   })
 
-  return reply.status(201).send({
-    checkIn,
-  })
+  return reply.status(201).send({ checkin })
 }

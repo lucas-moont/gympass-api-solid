@@ -20,7 +20,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     createGymBodySchema.parse(request.body)
 
   const createGym = makeCreateGym()
-  await createGym.execute({
+  const { gym } = await createGym.execute({
     title,
     cnpj,
     description,
@@ -29,5 +29,5 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     phone,
   })
 
-  return reply.status(201).send()
+  return reply.status(201).send({ gym })
 }
