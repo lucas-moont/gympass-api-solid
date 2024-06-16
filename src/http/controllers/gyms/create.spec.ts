@@ -5,11 +5,11 @@ import { createAndAuthenticateUser } from '@/utils/test/create-and-authenticate-
 
 describe('create gyms testing (e2e)', () => {
   beforeAll(async () => {
-    app.ready()
+    await app.ready()
   })
 
   afterAll(async () => {
-    app.close()
+    await app.close()
   })
 
   test('should be able to create gyms', async () => {
