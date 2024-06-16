@@ -4,10 +4,10 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 
 export async function nearby(req: FastifyRequest, reply: FastifyReply) {
   const nearbyQuerySchema = z.object({
-    latitude: z.number().refine((value) => {
+    latitude: z.coerce.number().refine((value) => {
       return Math.abs(value) <= 90
     }),
-    longitude: z.number().refine((value) => {
+    longitude: z.coerce.number().refine((value) => {
       return Math.abs(value) <= 180
     }),
     page: z.coerce.number().min(1).default(1),
@@ -23,7 +23,5 @@ export async function nearby(req: FastifyRequest, reply: FastifyReply) {
     page,
   })
 
-  return reply.status(200).send({
-    gyms,
-  })
+  return reply.status(200).send(gyms)
 }
