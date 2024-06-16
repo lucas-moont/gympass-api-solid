@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 export async function create(req: FastifyRequest, reply: FastifyReply) {
   const checkInsParamsSchema = z.object({
-    gym_id: z.string().uuid(),
+    gymId: z.string().uuid(),
   })
 
   const checkInsBodySchema = z.object({
@@ -16,14 +16,14 @@ export async function create(req: FastifyRequest, reply: FastifyReply) {
     }),
   })
 
-  const { gym_id } = checkInsParamsSchema.parse(req.params)
+  const { gymId } = checkInsParamsSchema.parse(req.params)
 
   const { latitude, longitude } = checkInsBodySchema.parse(req.body)
 
   const createCheckIn = makeCheckInsService()
 
   const checkIn = await createCheckIn.execute({
-    gymId: gym_id,
+    gymId,
     userId: req.user.sub,
     userLatitude: latitude,
     userLongitude: longitude,
