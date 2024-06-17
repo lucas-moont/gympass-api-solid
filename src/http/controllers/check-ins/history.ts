@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 export async function history(req: FastifyRequest, reply: FastifyReply) {
   const checkinsHistoryQuerySchema = z.object({
-    page: z.number(),
+    page: z.coerce.number(),
   })
 
   const { page } = checkinsHistoryQuerySchema.parse(req.query)
