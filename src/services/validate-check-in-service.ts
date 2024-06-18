@@ -35,7 +35,7 @@ export class ValidateCheckInService {
 
     checkin.validated_at = new Date()
 
-    this.checkInRepository.save(checkin)
+    await this.checkInRepository.save(checkin)
 
     return {
       checkin,

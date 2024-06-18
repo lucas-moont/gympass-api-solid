@@ -45,14 +45,13 @@ describe('Metrics e2e', () => {
       .set('Authorization', `Bearer ${token}`)
       .send()
 
-    expect(response.statusCode).toEqual(204)
-
-    checkin = await prisma.checkIn.findFirstOrThrow({
+    checkin = await prisma.checkIn.findUniqueOrThrow({
       where: {
         id: checkin.id,
       },
     })
-    console.log(checkin)
+    console.log(response.body)
+    expect(response.statusCode).toEqual(204)
     expect(checkin.validated_at).toEqual(expect.any(Date))
   })
 })
