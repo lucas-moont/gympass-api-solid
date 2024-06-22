@@ -50,7 +50,6 @@ describe('Metrics e2e', () => {
         id: checkin.id,
       },
     })
-    console.log(response.body)
     expect(response.statusCode).toEqual(204)
     expect(checkin.validated_at).toEqual(expect.any(Date))
   })
