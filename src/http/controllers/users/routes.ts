@@ -5,10 +5,12 @@ import { authenticate } from './authenticate'
 import { profile } from './profile'
 
 import { verifyJwt } from '../../middlewares/verify-jwt'
+import { refresh } from './refresh'
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/users', register)
   app.post('/session', authenticate)
+  app.patch('/token/refresh', refresh)
 
   /* AUTHENTICATE */
 
