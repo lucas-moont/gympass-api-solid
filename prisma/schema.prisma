@@ -13,10 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 model User {
   id            String    @id @default(uuid()) //o @id configura esse campo como a primary key do nosso bd
   name          String
   email         String    @unique
+  role          Role      @default(MEMBER)
   password_hash String
   created_at    DateTime  @default(now())
   checkIns      CheckIn[]
@@ -42,7 +48,7 @@ model Gym {
   title       String
   description String?
   phone       String?
-  cnpj        String @unique
+  cnpj        String    @unique
   latitude    Decimal
   longitude   Decimal
   checkIns    CheckIn[]
