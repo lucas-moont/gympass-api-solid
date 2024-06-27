@@ -13,7 +13,7 @@ describe('create gyms testing (e2e)', () => {
   })
 
   test('should be able to create gyms', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
 
     const response = await request(app.server)
       .post('/gyms')
