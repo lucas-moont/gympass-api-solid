@@ -13,7 +13,7 @@ describe('Metrics e2e', () => {
   })
 
   test('should be able to get check-ins count', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
     const responseGym = await request(app.server)
       .post('/gyms')
       .set('Authorization', `Bearer ${token}`)
